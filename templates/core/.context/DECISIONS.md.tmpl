@@ -1,0 +1,24 @@
+<!-- scaffolded by spawn {{.CLIVersion}} (https://github.com/LinkSpawnDev/linkspawn-create-context) on {{.Date}} -->
+# DECISIONS.md — {{.ProjectName}}
+
+Append-only log of locked decisions. Don't rewrite history — supersede with a new entry that references the old one. Agents: do not relitigate a decision recorded here; if you believe one is wrong, say so explicitly and wait for the owner to re-open it.
+
+Entry format:
+
+```markdown
+## DR-NNN — <title> (YYYY-MM-DD)
+
+**Status:** Accepted | Superseded by DR-MMM
+**Context:** the situation and the options that were on the table.
+**Decision:** what was chosen.
+**Trade-offs accepted:** what this costs us, stated honestly.
+```
+
+---
+
+## DR-001 — Adopt the `.context/` operating system ({{.Date}})
+
+**Status:** Accepted
+**Context:** AI agents need durable, tool-agnostic project memory: rules, state, architecture, and history that survive between sessions and across different agent tools.
+**Decision:** All agent-facing project knowledge lives as plain markdown in `.context/`, scaffolded by [linkspawn-create-context](https://github.com/LinkSpawnDev/linkspawn-create-context). Root `CLAUDE.md`/`GEMINI.md` are thin pointers into it.
+**Trade-offs accepted:** The docs are only as good as their upkeep — `PROJECT_STATE.md` must be updated every session or the system rots.

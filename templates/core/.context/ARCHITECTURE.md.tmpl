@@ -1,0 +1,29 @@
+<!-- scaffolded by spawn {{.CLIVersion}} (https://github.com/LinkSpawnDev/linkspawn-create-context) on {{.Date}} -->
+# ARCHITECTURE.md — {{.ProjectName}}
+
+System design, module boundaries, and data flow. Change this file rarely and deliberately — it describes decisions, not aspirations.
+
+---
+
+## Overview
+
+<!-- fill: one paragraph — what the system is, its main parts, and how data moves through them -->
+
+## Stack
+
+<!-- fill: languages, frameworks, storage, hosting — and the reason for each non-obvious choice (link the DECISIONS.md entry) -->
+
+## Module boundaries
+
+<!-- fill: the dependency direction and what each layer may and may not know about, e.g.
+- `cli → io → engine → domain`. No upward imports. No cycles.
+- `domain/` is pure: no I/O, no framework imports.
+-->
+
+## Data flow
+
+<!-- fill: how a request/job/file moves through the system, end to end -->
+
+## Locked decisions
+
+Architectural decisions are recorded in `DECISIONS.md` (append-only). Do not propose alternatives to a locked decision without explicitly re-opening it with the owner.
