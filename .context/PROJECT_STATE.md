@@ -27,7 +27,7 @@ This file is updated at the **end of every session** by whichever agent ran it. 
 ## Next actions
 
 1. Owner: review + push branch `ci/release-pipeline`, merge to main (agent never pushes).
-2. **Before tagging** — create the public `LinkSpawnDev/homebrew-tap` repo (empty, default branch is enough) and add a fine-grained PAT with write access to it as the `HOMEBREW_TAP_GITHUB_TOKEN` actions secret on this repo. The release workflow fails at the cask-publish step without both.
+2. **Before tagging** — tap repo `LinkSpawnDev/homebrew-tap` exists (created 2026-06-11, still empty: push an initial commit so it has a default branch). Auth is a **GitHub App** (no long-lived PAT, per owner policy): create an org-owned app with Contents read/write, install it on `homebrew-tap` only, then on this repo set actions variable `RELEASE_APP_ID` and secret `RELEASE_APP_PRIVATE_KEY` (the app's .pem). The release workflow mints a 1-hour installation token per run. Release fails at the cask-publish step without these.
 3. Tag `v0.1.0` (`git tag v0.1.0 && git push --tags`) — **target Mon 2026-06-15**. The release workflow gates on gofmt/vet/test, then GoReleaser builds darwin/linux/windows × amd64/arm64, publishes the GitHub Release (version auto-stamped from the tag), and pushes the `spawn` cask to the tap.
 4. Manually verify the interactive `spawn init` form in a real terminal (huh path is untested by automation).
 5. Phase 1: `spawn doctor` — checks list already specified in the private `context-review/CLI_BLUEPRINT.md`.

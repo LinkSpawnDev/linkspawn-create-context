@@ -24,6 +24,17 @@ jobs:
         run: go vet ./...
       - name: test
         run: go test ./...
+      # Mint a short-lived (1h) installation token for the tap push — no
+      # long-lived PAT. The app private key only mints tokens scoped to
+      # homebrew-tap; it cannot touch anything else.
+      - name: mint tap token
+        id: tap-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: LinkSpawnDev
+          repositories: homebrew-tap
       - name: goreleaser
         uses: goreleaser/goreleaser-action@v7
         with:
@@ -32,4 +43,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ steps.tap-token.outputs.token }}
