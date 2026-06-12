@@ -37,9 +37,19 @@ These templates weren't written for this repo — they were **distilled from yea
 
 ## Install
 
+Homebrew (macOS / Linux):
+
+```sh
+brew install LinkSpawnDev/tap/spawn
+```
+
+Go toolchain:
+
 ```sh
 go install github.com/LinkSpawnDev/linkspawn-create-context/cmd/spawn@latest
 ```
+
+Or grab a prebuilt binary for macOS, Linux, or Windows from the [releases page](https://github.com/LinkSpawnDev/linkspawn-create-context/releases).
 
 ## Use
 

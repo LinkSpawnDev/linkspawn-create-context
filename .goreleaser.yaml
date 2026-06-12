@@ -1,0 +1,60 @@
+# GoReleaser v2 — fired by .github/workflows/release.yml on every v* tag.
+# Local dry run: go run github.com/goreleaser/goreleaser/v2@latest release --snapshot --clean
+version: 2
+
+project_name: spawn
+
+builds:
+  - main: ./cmd/spawn
+    binary: spawn
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+
+homebrew_casks:
+  - name: spawn
+    repository:
+      owner: LinkSpawnDev
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Casks
+    binaries: [spawn]
+    homepage: https://github.com/LinkSpawnDev/linkspawn-create-context
+    description: Scaffold .context/ agent-context folders for any repository
+    commit_msg_template: "spawn {{ .Tag }}"
+    hooks:
+      post:
+        # Binaries are not signed/notarized yet; strip the quarantine bit so
+        # macOS Gatekeeper does not block first run.
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/spawn"]
+          end
+
+release:
+  footer: |
+    ---
+    Install via Homebrew: `brew install LinkSpawnDev/tap/spawn`
+    Or with Go: `go install github.com/LinkSpawnDev/linkspawn-create-context/cmd/spawn@{{ .Tag }}`

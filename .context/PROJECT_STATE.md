@@ -26,10 +26,11 @@ This file is updated at the **end of every session** by whichever agent ran it. 
 
 ## Next actions
 
-1. Owner: review, commit, and push the v0.1 tree (agent never pushes).
-2. Verify CI goes green on GitHub Actions, then tag `v0.1.0` with `-ldflags "-X main.version=v0.1.0"` documented in the release notes — **target Mon 2026-06-15**.
-3. Manually verify the interactive `spawn init` form in a real terminal (huh path is untested by automation).
-4. Phase 1: `spawn doctor` — checks list already specified in the private `context-review/CLI_BLUEPRINT.md`.
+1. Owner: review + push branch `ci/release-pipeline`, merge to main (agent never pushes).
+2. **Before tagging** — tap repo `LinkSpawnDev/homebrew-tap` exists (created 2026-06-11, still empty: push an initial commit so it has a default branch). Auth is a **GitHub App** (no long-lived PAT, per owner policy): create an org-owned app with Contents read/write, install it on `homebrew-tap` only, then on this repo set actions variable `RELEASE_APP_ID` and secret `RELEASE_APP_PRIVATE_KEY` (the app's .pem). The release workflow mints a 1-hour installation token per run. Release fails at the cask-publish step without these.
+3. Tag `v0.1.0` (`git tag v0.1.0 && git push --tags`) — **target Mon 2026-06-15**. The release workflow gates on gofmt/vet/test, then GoReleaser builds darwin/linux/windows × amd64/arm64, publishes the GitHub Release (version auto-stamped from the tag), and pushes the `spawn` cask to the tap.
+4. Manually verify the interactive `spawn init` form in a real terminal (huh path is untested by automation).
+5. Phase 1: `spawn doctor` — checks list already specified in the private `context-review/CLI_BLUEPRINT.md`.
 
 ## Blockers & open questions
 
@@ -38,5 +39,7 @@ This file is updated at the **end of every session** by whichever agent ran it. 
 ## Session status
 
 **Last session (2026-06-11):** Repo bootstrapped from scratch (prior attempt's engine patterns carried over, code rewritten as exported `pkg/`). Engine, CLI, both presets, README, CI workflow written; tests green; dogfooded on itself.
+
+**Session 2 (2026-06-11):** Repo pushed public; CI green. On branch `ci/release-pipeline`: bumped `actions/checkout` v4→v5 and `actions/setup-go` v5→v6 (Node 20 deprecation; Node 24 forced default 2026-06-16); added `.goreleaser.yaml` (v2, `homebrew_casks` — the `brews` section is deprecated) and `.github/workflows/release.yml` (tag-triggered, gofmt/vet/test gate before GoReleaser); README install section now lists brew/binaries/go install. Verified locally: `goreleaser check` + full `--snapshot` build (6 targets, cask generated, version stamp confirmed), gofmt/vet/test/build all clean. Release blocked on owner creating the tap repo + token secret (Next actions 2).
 
 **Next steps:** see Next actions above.
